@@ -13,6 +13,7 @@ get_me_bp = Blueprint('me', __name__)
 @require_auth()
 def get_me():
     # Get the authenticated user's email from the token claims
+    print('Token: ', current_token)
     try:
         # Try to access the token directly
         if hasattr(current_token, 'email'):
