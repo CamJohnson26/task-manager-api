@@ -5,7 +5,7 @@ def get_user_by_sub_query(connection_pool, sub):
     try:
         conn = connection_pool.getconn()
         cursor = conn.cursor()
-        cursor.execute("""SELECT auth0_id, id, email FROM public.user WHERE auth0_id = %s;""", (sub,))
+        cursor.execute("""SELECT auth0_id, id, email, is_admin, approved FROM public.user WHERE auth0_id = %s;""", (sub,))
         record = cursor.fetchone()
         cursor.close()
         if record is not None:
