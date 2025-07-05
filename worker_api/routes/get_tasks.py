@@ -32,7 +32,7 @@ def get_tasks():
         return jsonify({"error": "User not found"}), 404
 
     # Get the user_id from the user record
-    user_id = user[0]  # Assuming the id is the first column in the user table
+    user_id = user[1]  # Assuming the id is the first column in the user table
 
     # Get the tasks for the user
     tasks = get_tasks_by_user_id_db(user_id)
