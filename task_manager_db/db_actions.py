@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 
 from task_manager_db.queries.get_entity_query import get_entity_query
+from task_manager_db.queries.get_user_by_email_query import get_user_by_email_query
 
 from psycopg2 import pool
 
@@ -19,3 +20,7 @@ connection_pool = pool.SimpleConnectionPool(
 
 def get_entity_db():
     return get_entity_query(connection_pool)
+
+
+def get_user_by_email_db(email):
+    return get_user_by_email_query(connection_pool, email)
