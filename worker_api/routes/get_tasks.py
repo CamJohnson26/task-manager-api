@@ -31,6 +31,10 @@ def get_tasks():
     if not user:
         return jsonify({"error": "User not found"}), 404
 
+    # Check if the user is approved
+    if not user[4]:  # user[4] is the approved field
+        return jsonify({"error": "User not approved. Please contact an administrator."}), 403
+
     # Get the user_id from the user record
     user_id = user[1]  # Assuming the id is the first column in the user table
 
@@ -52,11 +56,11 @@ def get_tasks():
             "effort": task[8],
             "percent_completed": task[9]
         }
-        
+
         # Add last_completed field only for recurring tasks
         if task[4] == "recurring" and task[10]:  # task[4] is type, task[10] is last_completed
             task_dict["last_completed"] = task[10]
-        
+
         processed_tasks.append(task_dict)
 
     return jsonify(processed_tasks)

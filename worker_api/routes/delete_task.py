@@ -31,13 +31,17 @@ def delete_task(task_id):
     if not user:
         return jsonify({"error": "User not found"}), 404
 
+    # Check if the user is approved
+    if not user[4]:  # user[4] is the approved field
+        return jsonify({"error": "User not approved. Please contact an administrator."}), 403
+
     # Get the user_id from the user record
     user_id = user[1]  # Assuming the id is the second column in the user table
 
     # Delete the task
     success = delete_task_db(task_id, user_id)
-    
+
     if not success:
         return jsonify({"error": "Failed to delete task. Task not found or does not belong to user."}), 404
-    
+
     return jsonify({"message": "Task deleted successfully"}), 200  # 200 OK status code
