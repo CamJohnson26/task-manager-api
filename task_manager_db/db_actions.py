@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 
 from task_manager_db.queries.get_entity_query import get_entity_query
-from task_manager_db.queries.get_user_by_sub_query import get_user_by_email_query
+from task_manager_db.queries.get_user_by_sub_query import get_user_by_sub_query
 from task_manager_db.queries.get_tasks_by_user_id_query import get_tasks_by_user_id_query
 from task_manager_db.queries.create_task_query import create_task_query
 from task_manager_db.queries.update_task_query import update_task_query
@@ -26,8 +26,8 @@ def get_entity_db():
     return get_entity_query(connection_pool)
 
 
-def get_user_by_sub_db(email):
-    return get_user_by_email_query(connection_pool, email)
+def get_user_by_sub_db(sub):
+    return get_user_by_sub_query(connection_pool, sub)
 
 
 def get_tasks_by_user_id_db(user_id):

@@ -32,7 +32,7 @@ def edit_task(task_id):
         return jsonify({"error": "User not found"}), 404
 
     # Get the user_id from the user record
-    user_id = user[0]  # Assuming the id is the first column in the user table
+    user_id = user[1]  # Assuming the id is the second column in the user table
 
     # Get the task data from the request
     data = request.get_json()
