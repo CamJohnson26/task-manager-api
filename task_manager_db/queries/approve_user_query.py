@@ -5,23 +5,23 @@ def approve_user_query(connection_pool, user_id):
     try:
         conn = connection_pool.getconn()
         cursor = conn.cursor()
-        
+
         # Update the user's approved status to true
         cursor.execute("""
             UPDATE public.user
             SET approved = true
             WHERE id = %s
-            RETURNING id, auth0_id, email, approved;
+            RETURNING id, auth0_id, email, is_admin, approved;
         """, (user_id,))
-        
+
         # Get the updated user
         updated_user = cursor.fetchone()
-        
+
         # Commit the transaction
         conn.commit()
-        
+
         cursor.close()
-        
+
         if updated_user is not None:
             print(f"Approved user with id {user_id}")
             return updated_user

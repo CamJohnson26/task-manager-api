@@ -46,7 +46,8 @@ def get_users():
             "id": user[0],
             "auth0_id": user[1],
             "email": user[2],
-            "approved": user[3]
+            "is_admin": user[3],
+            "approved": user[4]
         }
         processed_users.append(user_dict)
 

@@ -31,8 +31,8 @@ def approve_user(user_id):
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    # Check if the user is an admin (approved=true)
-    # user[3] is the approved field
+    # Check if the user is an admin
+    # user[3] is the is_admin field
     if len(user) < 4 or not user[3]:
         return jsonify({"error": "Unauthorized. Admin access required."}), 403
 
@@ -47,7 +47,8 @@ def approve_user(user_id):
         "id": updated_user[0],
         "auth0_id": updated_user[1],
         "email": updated_user[2],
-        "approved": updated_user[3]
+        "is_admin": updated_user[3],
+        "approved": updated_user[4]
     }
 
     return jsonify(user_dict)

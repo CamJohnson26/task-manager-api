@@ -5,7 +5,7 @@ def get_all_users_query(connection_pool):
     try:
         conn = connection_pool.getconn()
         cursor = conn.cursor()
-        cursor.execute("""SELECT id, auth0_id, email, approved FROM public.user;""")
+        cursor.execute("""SELECT id, auth0_id, email, is_admin, approved FROM public.user;""")
         records = cursor.fetchall()
         cursor.close()
         if records is not None:
