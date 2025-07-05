@@ -9,6 +9,7 @@ from task_manager_db.queries.get_tasks_by_user_id_query import get_tasks_by_user
 from task_manager_db.queries.create_task_query import create_task_query
 from task_manager_db.queries.update_task_query import update_task_query
 from task_manager_db.queries.delete_task_query import delete_task_query
+from task_manager_db.queries.create_user_query import create_user_query
 
 from psycopg2 import pool
 
@@ -44,3 +45,7 @@ def update_task_db(task_id, user_id, title, description, task_type, due_date, pr
 
 def delete_task_db(task_id, user_id):
     return delete_task_query(connection_pool, task_id, user_id)
+
+
+def create_user_db(auth0_id, email):
+    return create_user_query(connection_pool, auth0_id, email)

@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify, g
 
 from auth0.auth_protector import require_auth
-from task_manager_db.db_actions import get_user_by_sub_db
+from task_manager_db.db_actions import get_user_by_sub_db, create_user_db
 from authlib.integrations.flask_oauth2 import current_token
 
 get_me_bp = Blueprint('me', __name__)
@@ -23,12 +23,29 @@ def get_me():
         return jsonify({"error": f"Error accessing token: {str(e)}"}), 401
 
     if not sub:
-        return jsonify({"error": "Email not found in token"}), 400
+        return jsonify({"error": "Sub not found in token"}), 400
 
     # Get the user from the database
     user = get_user_by_sub_db(sub)
 
+    # If user doesn't exist, create a new user with approved=false
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        # Try to get email from token
+        email = None
+        try:
+            if hasattr(current_token, 'email'):
+                email = current_token.get("email")
+        except Exception:
+            pass
+
+        # If email is not available, use a placeholder with the sub
+        if not email:
+            email = f"{sub}@placeholder.com"
+
+        # Create the user
+        user = create_user_db(sub, email)
+
+        if not user:
+            return jsonify({"error": "Failed to create user"}), 500
 
     return jsonify(user)
