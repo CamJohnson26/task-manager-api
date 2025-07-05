@@ -6,6 +6,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from os import getenv
 
+from worker_api.routes.get_entity import get_entity_bp
 from worker_api.routes.get_private import get_private_bp
 from worker_api.routes.get_route import get_route_bp
 
@@ -20,5 +21,6 @@ def create_api():
 
     app.register_blueprint(get_route_bp)
     app.register_blueprint(get_private_bp)
+    app.register_blueprint(get_entity_bp)
 
     return app
