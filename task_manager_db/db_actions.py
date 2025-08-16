@@ -6,6 +6,7 @@ import os
 from task_manager_db.queries.get_entity_query import get_entity_query
 from task_manager_db.queries.get_user_by_sub_query import get_user_by_sub_query
 from task_manager_db.queries.get_tasks_by_user_id_query import get_tasks_by_user_id_query
+from task_manager_db.queries.get_task_by_id_query import get_task_by_id_query
 from task_manager_db.queries.create_task_query import create_task_query
 from task_manager_db.queries.update_task_query import update_task_query
 from task_manager_db.queries.delete_task_query import delete_task_query
@@ -35,6 +36,10 @@ def get_user_by_sub_db(sub):
 
 def get_tasks_by_user_id_db(user_id):
     return get_tasks_by_user_id_query(connection_pool, user_id)
+
+
+def get_task_by_id_db(task_id, user_id):
+    return get_task_by_id_query(connection_pool, task_id, user_id)
 
 
 def create_task_db(user_id, title, description, task_type, due_date, priority, status, effort, percent_completed):
