@@ -56,10 +56,11 @@ def create_task():
     status = data.get('status', 'pending')  # Default status is pending
     effort = data.get('effort', 1)  # Default effort is 1
     percent_completed = data.get('percent_completed', 0.0)  # Default percent_completed is 0.0
+    interval = data.get('interval')  # No default for interval
 
     # Create the task
     new_task = create_task_db(
-        user_id, title, description, task_type, due_date, priority, status, effort, percent_completed
+        user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, interval
     )
 
     if not new_task:
@@ -82,5 +83,9 @@ def create_task():
     # Add completed_at field if it exists
     if len(new_task) > 10 and new_task[10] is not None:
         task_dict["completed_at"] = new_task[10]
+
+    # Add interval field if it exists
+    if len(new_task) > 11 and new_task[11] is not None:
+        task_dict["interval"] = new_task[11]
 
     return jsonify(task_dict), 201  # 201 Created status code

@@ -63,11 +63,12 @@ def edit_task(task_id):
     effort = data.get('effort', 1)  # Default effort is 1
     percent_completed = data.get('percent_completed', 0.0)  # Default percent_completed is 0.0
     completed_at = data.get('completed_at')
+    interval = data.get('interval')  # No default for interval
 
 
     # Update the task
     updated_task = update_task_db(
-        task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at
+        task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at, interval
     )
 
     if not updated_task:
@@ -90,5 +91,9 @@ def edit_task(task_id):
     # Add completed_at field if it exists
     if len(updated_task) > 10 and updated_task[10] is not None:
         task_dict["completed_at"] = updated_task[10]
+
+    # Add interval field if it exists
+    if len(updated_task) > 11 and updated_task[11] is not None:
+        task_dict["interval"] = updated_task[11]
 
     return jsonify(task_dict), 200  # 200 OK status code

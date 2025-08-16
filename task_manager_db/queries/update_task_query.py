@@ -1,6 +1,6 @@
 # task_manager_db/queries/update_task_query.py
 
-def update_task_query(connection_pool, task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at=None):
+def update_task_query(connection_pool, task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at=None, interval=None):
     conn = None
     try:
         conn = connection_pool.getconn()
@@ -28,10 +28,11 @@ def update_task_query(connection_pool, task_id, user_id, title, description, tas
                 status = %s,
                 effort = %s,
                 percent_completed = %s,
-                completed_at = %s
+                completed_at = %s,
+                interval = %s
             WHERE id = %s AND user_id = %s
-            RETURNING id, user_id, title, description, type, due_date, priority, status, effort, percent_completed, completed_at;
-        """, (title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at, task_id, user_id))
+            RETURNING id, user_id, title, description, type, due_date, priority, status, effort, percent_completed, completed_at, interval;
+        """, (title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at, interval, task_id, user_id))
 
         # Get the updated task
         updated_task = cursor.fetchone()

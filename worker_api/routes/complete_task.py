@@ -57,12 +57,17 @@ def complete_task(task_id):
     priority = current_task[6]  # Assuming priority is the 7th column (index 6)
     effort = current_task[8]  # Assuming effort is the 9th column (index 8)
 
+    # Get the interval if it exists
+    interval = None
+    if len(current_task) > 12:
+        interval = current_task[12]
+
     # Set the completed_at timestamp
     completed_at = datetime.now()
 
     # Update the task
     updated_task = update_task_db(
-        task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at
+        task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at, interval
     )
 
     if not updated_task:
@@ -82,5 +87,9 @@ def complete_task(task_id):
         "percent_completed": updated_task[9],
         "completed_at": updated_task[10]
     }
+
+    # Add interval field if it exists
+    if len(updated_task) > 11 and updated_task[11] is not None:
+        task_dict["interval"] = updated_task[11]
 
     return jsonify(task_dict), 200  # 200 OK status code
