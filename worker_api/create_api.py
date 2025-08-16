@@ -11,6 +11,7 @@ from worker_api.routes.get_private import get_private_bp
 from worker_api.routes.get_route import get_route_bp
 from worker_api.routes.get_me import get_me_bp
 from worker_api.routes.get_tasks import get_tasks_bp
+from worker_api.routes.get_completed_tasks import get_completed_tasks_bp
 from worker_api.routes.create_task import create_task_bp
 from worker_api.routes.edit_task import edit_task_bp
 from worker_api.routes.delete_task import delete_task_bp
@@ -32,6 +33,7 @@ def create_api():
     app.register_blueprint(get_entity_bp)
     app.register_blueprint(get_me_bp)
     app.register_blueprint(get_tasks_bp)
+    app.register_blueprint(get_completed_tasks_bp)
     app.register_blueprint(create_task_bp)
     app.register_blueprint(edit_task_bp)
     app.register_blueprint(delete_task_bp)
