@@ -59,8 +59,8 @@ def complete_task(task_id):
 
     # Get the interval if it exists
     interval = None
-    if len(current_task) > 12:
-        interval = current_task[12]
+    if len(current_task) > 11:
+        interval = current_task[11]
 
     # Set the completed_at timestamp
     completed_at = datetime.now()
@@ -85,11 +85,8 @@ def complete_task(task_id):
         "status": updated_task[7],
         "effort": updated_task[8],
         "percent_completed": updated_task[9],
-        "completed_at": updated_task[10]
+        "completed_at": updated_task[10],
+        "interval": updated_task[11]
     }
-
-    # Add interval field if it exists
-    if len(updated_task) > 11 and updated_task[11] is not None:
-        task_dict["interval"] = updated_task[11]
 
     return jsonify(task_dict), 200  # 200 OK status code

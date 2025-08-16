@@ -65,6 +65,15 @@ def edit_task(task_id):
     completed_at = data.get('completed_at')
     interval = data.get('interval')  # No default for interval
 
+    # Validate task type
+    valid_types = ["individual", "recurring_interval", "recurring_daily", "recurring_weekly", "recurring_monthly", "recurring_yearly"]
+    if task_type not in valid_types:
+        return jsonify({"error": f"Invalid task type. Must be one of: {', '.join(valid_types)}"}), 400
+
+    # Validate interval for recurring_interval type
+    if task_type == "recurring_interval" and interval is None:
+        return jsonify({"error": "Interval is required for recurring_interval task type"}), 400
+
 
     # Update the task
     updated_task = update_task_db(
