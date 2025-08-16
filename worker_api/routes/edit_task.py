@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, request, g
 from authlib.integrations.flask_oauth2 import current_token
 
 from auth0.auth_protector import require_auth
-from task_manager_db.db_actions import get_user_by_sub_db, update_task_db
+from task_manager_db.db_actions import get_user_by_sub_db, update_task_db, get_task_by_id_db
 
 edit_task_bp = Blueprint('edit_task', __name__)
 
@@ -38,6 +38,12 @@ def edit_task(task_id):
     # Get the user_id from the user record
     user_id = user[1]  # Assuming the id is the second column in the user table
 
+    # Get the current task data from the database
+    current_task = get_task_by_id_db(task_id, user_id)
+
+    if not current_task:
+        return jsonify({"error": "Task not found or does not belong to user."}), 404
+
     # Get the task data from the request
     data = request.get_json()
 
@@ -57,9 +63,14 @@ def edit_task(task_id):
     effort = data.get('effort', 1)  # Default effort is 1
     percent_completed = data.get('percent_completed', 0.0)  # Default percent_completed is 0.0
 
+    # Get the completed_at field from the current task data
+    completed_at = None
+    if len(current_task) > 11:
+        completed_at = current_task[11]
+
     # Update the task
     updated_task = update_task_db(
-        task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed
+        task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at
     )
 
     if not updated_task:
@@ -78,5 +89,9 @@ def edit_task(task_id):
         "effort": updated_task[8],
         "percent_completed": updated_task[9]
     }
+
+    # Add completed_at field if it exists
+    if len(updated_task) > 10 and updated_task[10] is not None:
+        task_dict["completed_at"] = updated_task[10]
 
     return jsonify(task_dict), 200  # 200 OK status code

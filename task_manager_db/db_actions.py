@@ -47,8 +47,8 @@ def create_task_db(user_id, title, description, task_type, due_date, priority, s
     return create_task_query(connection_pool, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed)
 
 
-def update_task_db(task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed):
-    return update_task_query(connection_pool, task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed)
+def update_task_db(task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at=None):
+    return update_task_query(connection_pool, task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at)
 
 
 def delete_task_db(task_id, user_id):

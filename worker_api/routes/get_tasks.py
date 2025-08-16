@@ -57,6 +57,10 @@ def get_tasks():
             "percent_completed": task[9]
         }
 
+        # Add completed_at field if it exists
+        if len(task) > 11 and task[11] is not None:
+            task_dict["completed_at"] = task[11]
+
         # Add last_completed field only for recurring tasks
         if task[4] == "recurring" and task[10]:  # task[4] is type, task[10] is last_completed
             task_dict["last_completed"] = task[10]

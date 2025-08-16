@@ -2,6 +2,7 @@
 
 from flask import Blueprint, jsonify, request
 from authlib.integrations.flask_oauth2 import current_token
+from datetime import datetime
 
 from auth0.auth_protector import require_auth
 from task_manager_db.db_actions import get_user_by_sub_db, get_task_by_id_db, update_task_db
@@ -56,9 +57,12 @@ def complete_task(task_id):
     priority = current_task[6]  # Assuming priority is the 7th column (index 6)
     effort = current_task[8]  # Assuming effort is the 9th column (index 8)
 
+    # Set the completed_at timestamp
+    completed_at = datetime.now()
+
     # Update the task
     updated_task = update_task_db(
-        task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed
+        task_id, user_id, title, description, task_type, due_date, priority, status, effort, percent_completed, completed_at
     )
 
     if not updated_task:
@@ -75,7 +79,8 @@ def complete_task(task_id):
         "priority": updated_task[6],
         "status": updated_task[7],
         "effort": updated_task[8],
-        "percent_completed": updated_task[9]
+        "percent_completed": updated_task[9],
+        "completed_at": updated_task[10]
     }
 
     return jsonify(task_dict), 200  # 200 OK status code

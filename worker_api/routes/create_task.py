@@ -79,4 +79,8 @@ def create_task():
         "percent_completed": new_task[9]
     }
 
+    # Add completed_at field if it exists
+    if len(new_task) > 10 and new_task[10] is not None:
+        task_dict["completed_at"] = new_task[10]
+
     return jsonify(task_dict), 201  # 201 Created status code
