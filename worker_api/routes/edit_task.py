@@ -62,11 +62,8 @@ def edit_task(task_id):
     status = data.get('status', 'pending')  # Default status is pending
     effort = data.get('effort', 1)  # Default effort is 1
     percent_completed = data.get('percent_completed', 0.0)  # Default percent_completed is 0.0
+    completed_at = data.get('completed_at')
 
-    # Get the completed_at field from the current task data
-    completed_at = None
-    if len(current_task) > 11:
-        completed_at = current_task[11]
 
     # Update the task
     updated_task = update_task_db(
