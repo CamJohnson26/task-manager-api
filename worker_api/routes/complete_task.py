@@ -2,12 +2,20 @@
 
 from flask import Blueprint, jsonify, request
 from authlib.integrations.flask_oauth2 import current_token
-from datetime import datetime
+from datetime import datetime, timedelta, date
 
 from auth0.auth_protector import require_auth
-from task_manager_db.db_actions import get_user_by_sub_db, get_task_by_id_db, update_task_db
+from task_manager_db.db_actions import get_user_by_sub_db, get_task_by_id_db, update_task_db, create_task_db
 
 complete_task_bp = Blueprint('complete_task', __name__)
+
+def ensure_date(date_value):
+    """Convert a string date to a date object if needed."""
+    if isinstance(date_value, str):
+        return datetime.fromisoformat(date_value).date()
+    elif isinstance(date_value, datetime):
+        return date_value.date()
+    return date_value
 
 
 @complete_task_bp.route('/tasks/<task_id>/complete', methods=['PUT'])
@@ -88,5 +96,67 @@ def complete_task(task_id):
         "completed_at": updated_task[10],
         "interval": updated_task[11]
     }
+
+    # Check if the task is a recurring type
+    recurring_types = ["recurring_interval", "recurring_daily", "recurring_weekly", "recurring_monthly", "recurring_yearly"]
+    if task_type in recurring_types:
+        # Calculate the new due date based on the task type
+        new_due_date = None
+        if due_date:
+            # Ensure due_date is a date object
+            due_date_obj = ensure_date(due_date)
+            if task_type == "recurring_interval" and interval:
+                new_due_date = due_date_obj + timedelta(days=int(interval))
+            elif task_type == "recurring_daily":
+                new_due_date = due_date_obj + timedelta(days=1)
+            elif task_type == "recurring_weekly":
+                new_due_date = due_date_obj + timedelta(days=7)
+            elif task_type == "recurring_monthly":
+                new_due_date = due_date_obj + timedelta(days=30)
+            elif task_type == "recurring_yearly":
+                new_due_date = due_date_obj + timedelta(days=365)
+        else:
+            # If no due date was set, use the current date
+            current_date = datetime.now().date()
+            if task_type == "recurring_interval" and interval:
+                new_due_date = current_date + timedelta(days=int(interval))
+            elif task_type == "recurring_daily":
+                new_due_date = current_date + timedelta(days=1)
+            elif task_type == "recurring_weekly":
+                new_due_date = current_date + timedelta(days=7)
+            elif task_type == "recurring_monthly":
+                new_due_date = current_date + timedelta(days=30)
+            elif task_type == "recurring_yearly":
+                new_due_date = current_date + timedelta(days=365)
+
+        # Create a new task with the same properties but with the updated due date
+        new_task = create_task_db(
+            user_id, title, description, task_type, new_due_date, priority, "pending", effort, 0.0, interval
+        )
+
+        if new_task:
+            # Convert the new task tuple to a dictionary
+            new_task_dict = {
+                "id": new_task[0],
+                "user_id": new_task[1],
+                "title": new_task[2],
+                "description": new_task[3],
+                "type": new_task[4],
+                "due_date": new_task[5],
+                "priority": new_task[6],
+                "status": new_task[7],
+                "effort": new_task[8],
+                "percent_completed": new_task[9]
+            }
+
+            # Add interval field if it exists
+            if len(new_task) > 11 and new_task[11] is not None:
+                new_task_dict["interval"] = new_task[11]
+
+            # Return both the completed task and the new task
+            return jsonify({
+                "completed_task": task_dict,
+                "new_task": new_task_dict
+            }), 200
 
     return jsonify(task_dict), 200  # 200 OK status code

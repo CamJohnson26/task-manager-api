@@ -63,7 +63,7 @@ def get_tasks():
 
         # Add interval field if it exists
         if len(task) > 11 and task[11] is not None:
-            task_dict["interval"] = task[12]
+            task_dict["interval"] = task[11]
 
         # Add last_completed field only for recurring tasks
         if task[4] == "recurring" and task[12]:  # task[4] is type, task[11] is last_completed
